@@ -1,0 +1,135 @@
+/***************** 
+ * Escape.js * 
+ ***************** 
+*/
+
+#BEGIN_PROPERTIES# 
+ { 
+     "version": "1.2", 
+     "commandsIntroduced": 
+         ["global.startLevel", "global.onExit", "map.placePlayer", 
+          "map.placeObject", "map.getHeight", "map.getWidth", 
+          "map.displayChapter", "map.getPlayer", "player.hasItem"], 
+     "music": "The Green" 
+ } 
+ #END_PROPERTIES# 
+
+ 
+ function startLevel(map) { 
+ #START_OF_START_LEVEL# 
+     //map.displayChapter('Chapter 1\nBreakout'); 
+
+     map.placePlayer(26, 10); 
+     
+     map.placeObject(25, 10, 'block');
+     map.placeObject(26, 11, 'block');
+     map.placeObject(27, 10, 'block');
+     map.placeObject(26, 9, 'block');
+     
+     for (y = 3; y <= map.getHeight() - 10; y++) { 
+         map.placeObject(5, y, 'block'); 
+         map.placeObject(map.getWidth() - 5, y, 'block'); 
+     } 
+ 
+     for (x = 5; x <= map.getWidth() - 5; x++) { 
+         map.placeObject(x, 3, 'block'); 
+         map.placeObject(x, map.getHeight() - 10, 'block');
+         
+         map.defineObject('Bullet', { 
+         'type': 'dynamic', 
+         'symbol': '⊙', 
+         'color': 'red', 
+        'interval': 200, 
+         'onCollision': function (player) { 
+             player.killedBy('the boss'); 
+         }, 
+         'behavior': function (me) { 
+         	if (!me.direction) { 
+         		me.direction = 'right'; 
+         	} 
+         	if (me.canMove(me.direction)) { 
+             	me.move(me.direction); 
+         	} else { 
+         		me.direction = (me.direction == 'right') ? 'left' : 'right'; 
+         	} 
+         	if (Math.random() < 0.3) { 
+             	map.placeObject(me.getX(), me.getY() + 2, 'bullet'); 
+} 
+         }, 
+         'onDestroy': function (me) { 
+             if (map.countObjects('boss') == 0) { 
+                 map.placeObject(me.getX(), me.getY(), 'theAlgorithm'); 
+             } 
+         } 
+     }); 
+
+         
+         map.defineObject('Bullet', { 
+         'type': 'dynamic', 
+         'symbol': '.', 
+         'color': 'red', 
+         'interval': 100, 
+         'projectile': true, 
+         'behavior': function (me) { 
+             me.move('right'); 
+              
+         map.defineObject('Bulletl', { 
+         'type': 'dynamic', 
+         'symbol': '.', 
+         'color': 'red', 
+         'interval': 100, 
+         'projectile': true, 
+         'behavior': function (me) { 
+             me.move('left'); 
+              
+         map.defineObject('Bulletu', { 
+         'type': 'dynamic', 
+         'symbol': '.', 
+         'color': 'red', 
+         'interval': 100, 
+         'projectile': true, 
+         'behavior': function (me) { 
+             me.move('up'); 
+              
+         map.defineObject('Bulletd', { 
+         'type': 'dynamic', 
+         'symbol': '.', 
+         'color': 'red', 
+         'interval': 100, 
+         'projectile': true, 
+         'behavior': function (me) { 
+             me.move('down'); 
+         } 
+     }); 
+     
+     for (y = 3; y <= map.getHeight() - 11; y++) {
+        map.placeObject(6, y, 'Bullet');
+        map.placeObject(map.getWidth() - 6, y, 'Bulletl');
+        }
+      for (x = 5; x <= map.getWidth() - 6; x++) {
+        map.placeObject(x, 4, 'Bulletd');
+        map.placeObject(x, map.getHeight() - 11, 'Bulletu');
+    }
+     
+  
+ #BEGIN_EDITABLE# 
+ 
+ 
+ #END_EDITABLE# 
+ 
+ 
+     map.placeObject(15, 12, 'computer'); 
+ 
+     map.placeObject(map.getWidth()-7, map.getHeight()-7, 'exit'); 
+ #END_OF_START_LEVEL# 
+ } 
+ 
+ 
+ function onExit(map) { 
+     if (!map.getPlayer().hasItem('computer')) { 
+         map.writeStatus("Don't forget to pick up the computer!"); 
+         return false; 
+     } else { 
+         return true; 
+     } 
+ } 
